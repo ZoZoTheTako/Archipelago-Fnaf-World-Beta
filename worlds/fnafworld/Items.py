@@ -1,5 +1,6 @@
 from typing import Dict, Set, Tuple, NamedTuple
 
+
 class ItemData(NamedTuple):
     category: str
     code: int
@@ -8,9 +9,10 @@ class ItemData(NamedTuple):
     useful: bool = False
     trap: bool = False
 
-#im so tired
+
+# im so tired
 item_table: Dict[str, ItemData] = {
-    #characters
+    # characters
     'Balloon Boy': ItemData('Character', 19878173001, progression=True),
     'JJ': ItemData('Character', 19878173002, progression=True),
     'Phantom Freddy': ItemData('Character', 19878173003, progression=True),
@@ -51,7 +53,7 @@ item_table: Dict[str, ItemData] = {
     'Nightmarionne': ItemData('Character', 19878173037, progression=True),
     'Coffee': ItemData('Character', 19878173038, progression=True),
     'Purple Guy': ItemData('Character', 19878173039, progression=True),
-    #chips
+    # chips
     'Headstart: Defense': ItemData('Chip', 19878173040, useful=True),
     'Endless: Defense': ItemData('Chip', 19878173041, useful=True),
     'Progressive: Defense': ItemData('Progressive Chip', 19878173042, 2, useful=True),
@@ -77,7 +79,7 @@ item_table: Dict[str, ItemData] = {
     'Counter: Bite': ItemData('Chip', 19878173062, useful=True),
     'Pizza: Fury': ItemData('Chip', 19878173063, useful=True),
     'Block: Unscrew': ItemData('Chip', 19878173064, useful=True),
-    #bytes
+    # bytes
     'Gnat': ItemData('Byte', 19878173065, useful=True),
     'Neon Bee': ItemData('Byte', 19878173066, useful=True),
     'Neon Wasp': ItemData('Byte', 19878173067, useful=True),
@@ -107,7 +109,7 @@ item_table: Dict[str, ItemData] = {
     'BossDrain02': ItemData('Byte', 19878173091, useful=True),
     'BossDrain-X': ItemData('Byte', 19878173092, useful=True),
     'Progressive BossDrain Byte': ItemData('Progressive Byte', 19878173093, 3, useful=True),
-    #other shit
+    # other shit
     'Key': ItemData('Major Item', 19878173094, progression=True),
     'Backstage Portal': ItemData('Other', 19878173095, progression=True),
     'Fazbear Hills Button': ItemData('Major Item', 19878173096, progression=True),
@@ -129,6 +131,7 @@ filler_items: Tuple[str, ...] = (
     'Faz-Tokens (50)',
     'Faz-Tokens (100)'
 )
+
 
 def get_item_names_per_category() -> Dict[str, Set[str]]:
     categories: Dict[str, Set[str]] = {}

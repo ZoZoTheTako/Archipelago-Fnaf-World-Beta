@@ -1,8 +1,6 @@
 from typing import List, Tuple, Optional, Callable, NamedTuple
 from BaseClasses import MultiWorld, CollectionState
 from .Options import is_option_enabled
-from .PreCalculatedWeights import PreCalculatedWeights
-from .LogicExtensions import TimespinnerLogic
 
 EventId: Optional[int] = None
 
@@ -14,8 +12,9 @@ class LocationData(NamedTuple):
     rule: Callable[[CollectionState], bool] = lambda state: True
 
 
-def get_location_datas(world: Optional[MultiWorld], player: Optional[int], 
-                  precalculated_weights: PreCalculatedWeights) -> Tuple[LocationData, ...]:
+# SW: Probably don't need the PreCalculatedWeights thing
+def get_location_datas(world: Optional[MultiWorld], player: Optional[int],
+                       precalculated_weights: PreCalculatedWeights) -> Tuple[LocationData, ...]:
 
     flooded: PreCalculatedWeights = precalculated_weights
     logic = TimespinnerLogic(world, player, precalculated_weights)
@@ -46,7 +45,7 @@ def get_location_datas(world: Optional[MultiWorld], player: Optional[int],
         LocationData('World', 'Counter: Bite Chest',  19878173018),
         LocationData('World', 'Pizza: Fury Chest',  19878173019),
         LocationData('World', 'Block: Unscrew Chest',  19878173020),
-        #characters
+        # characters
         LocationData('World', 'Recruit Balloon Boy',  19878173021),
         LocationData('World', 'Recruit JJ',  19878173022),
         LocationData('World', 'Recruit Phantom Freddy',  19878173023),
@@ -79,13 +78,13 @@ def get_location_datas(world: Optional[MultiWorld], player: Optional[int],
         LocationData('World', 'Recruit Nightmare',  19878173050),
         LocationData('World', 'Recruit Fredbear',  19878173051),
         LocationData('World', 'Recruit Spring Bonnie',  19878173052),
-        #minigames
+        # minigames
         LocationData('World', 'Complete Foxy.exe',  19878173053),
         LocationData('World', 'Complete Foxy Fighters - A Rank',  19878173054),
         LocationData('World', 'Complete Foxy Fighters - B Rank or below',  19878173055),
         LocationData('World', 'Complete Freddy In Space - Any%',  19878173059),
         LocationData('World', 'Complete Freddy In Space - 100%',  19878173060),
-        #shops
+        # shops
         LocationData('World', 'Fazbear Hills Lolbit - Purchase Gnat',  19878173061),
         LocationData('World', 'Fazbear Hills Lolbit - Purchase Neon Bee',  19878173062),
         LocationData('World', 'Fazbear Hills Lolbit - Purchase Neon Wasp',  19878173063),

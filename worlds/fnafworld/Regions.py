@@ -1,27 +1,28 @@
 from typing import List, Set, Dict, Tuple, Optional, Callable
 from BaseClasses import CollectionState, MultiWorld, Region, Entrance, Location
-from .Options import is_option_enabled
 from .Locations import LocationData, get_location_datas
 
 
 def create_regions_and_locations(world: MultiWorld, player: int):
-    locationn_datas: Tuple[LocationData] = get_location_datas(world, player)
+    location_data: Tuple[LocationData] = get_location_datas(world, player)
 
-    locations_per_region: Dict[str, List[LocationData]] = split_location_datas_per_region(locationn_datas)
+    locations_per_region: Dict[str, List[LocationData]] = split_location_datas_per_region(location_data)
 
     regions = [
         create_region(world, player, locations_per_region, 'Menu'),
         create_region(world, player, locations_per_region, 'World'),
+    ]
 
 
-def throwIfAnyLocationIsNotAssignedToARegion(regions: List[Region], regionNames: Set[str]):
-    existingRegions: Set[str] = set()
+def throw_if_any_location_is_not_assigned_to_a_region(regions: List[Region], region_names: Set[str]):
+    existing_regions: Set[str] = set()
 
     for region in regions:
-        existingRegions.add(region.name)
+        existing_regions.add(region.name)
 
-    if (regionNames - existingRegions):
-        raise Exception("FnafWorld: the following regions are used in locations: {}, but no such region exists".format(regionNames - existingRegions))
+    if region_names - existing_regions:
+        raise Exception("FnafWorld: the following regions are used in locations: {},"
+                        " but no such region exists".format(region_names - existing_regions))
 
 
 def create_location(player: int, location_data: LocationData, region: Region) -> Location:
@@ -46,7 +47,7 @@ def create_region(world: MultiWorld, player: int, locations_per_region: Dict[str
     return region
 
 
-def connectStartingRegion(world: MultiWorld, player: int):
+def connect_starting_region(world: MultiWorld, player: int):
     menu = world.get_region('Menu', player)
     overworld = world.get_region('World', player)
 
@@ -58,20 +59,20 @@ def connectStartingRegion(world: MultiWorld, player: int):
 def connect(world: MultiWorld, player: int, source: str, target: str, 
             rule: Optional[Callable[[CollectionState], bool]] = None):
     
-    sourceRegion = world.get_region(source, player)
-    targetRegion = world.get_region(target, player)
+    source_region = world.get_region(source, player)
+    target_region = world.get_region(target, player)
 
-    connection = Entrance(player, "", sourceRegion)
+    connection = Entrance(player, "", source_region)
 
     if rule:
         connection.access_rule = rule
 
-    sourceRegion.exits.append(connection)
-    connection.connect(targetRegion)
+    source_region.exits.append(connection)
+    connection.connect(target_region)
 
 
 def split_location_datas_per_region(locations: Tuple[LocationData, ...]) -> Dict[str, List[LocationData]]:
-    per_region: Dict[str, List[LocationData]]  = {}
+    per_region: Dict[str, List[LocationData]] = {}
 
     for location in locations:
         per_region.setdefault(location.region, []).append(location)

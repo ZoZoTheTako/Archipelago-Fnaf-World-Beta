@@ -1,11 +1,11 @@
 from typing import Dict, List, Set, Tuple, TextIO, Union
 from BaseClasses import Item, MultiWorld, Tutorial, ItemClassification
-from .Items import get_item_names_per_category
-from .Items import item_table, filler_items
+from .Items import get_item_names_per_category, item_table, filler_items
 from .Locations import get_location_datas, EventId
 from .Options import is_option_enabled, get_option_value, fnafworld_options
 from .Regions import create_regions_and_locations
 from worlds.AutoWorld import World, WebWorld
+
 
 class FnafWorldWebWorld(WebWorld):
     theme = "ice"
@@ -18,19 +18,19 @@ class FnafWorldWebWorld(WebWorld):
         ["ZoZoTheTako"]
     )
 
+    tutorials = [setup]
 
-    tutorials = [setup, setup_de]
 
 class FnafWorldWorld(World):
     """
     FNAF World is a cute turn-based RPG! 
-    Take your favorite animatronics from the Five Nights at Freddy's series out on a wacky adventure to save animatronica!
+    Take your favorite animatronics from the Five Nights at Freddy's series out on a wacky adventure to save Animatronica!
     """
 
     option_definitions = fnafworld_options
     game = "FNAF World"
     topology_present = True
-    data_version = 11
+    data_version = 0
     web = FnafWorldWebWorld()
     required_client_version = (0, 4, 0)
 
@@ -38,15 +38,14 @@ class FnafWorldWorld(World):
     location_name_to_id = {location.name: location.code for location in get_location_datas(None, None, None)}
     item_name_groups = get_item_names_per_category()
 
-
+    # SW: not sure if you actually need this
     def __init__(self, world: MultiWorld, player: int):
         super().__init__(world, player)
 
-
-    def create_regions(self) -> None: 
+    def create_regions(self) -> None:
         create_regions_and_locations(self.multiworld, self.player)
 
-    def create_items(self) -> None: 
+    def create_items(self) -> None:
         self.create_and_assign_event_items()
 
         excluded_items: Set[str] = self.get_excluded_items()
@@ -67,15 +66,15 @@ class FnafWorldWorld(World):
         else:
             ending = "Collect The Clocks"
 
-        self.multiworld.completion_condition[self.player] = lambda state: state.has(ending, self.player) 
+        self.multiworld.completion_condition[self.player] = lambda state: state.has(ending, self.player)
 
     def fill_slot_data(self) -> Dict[str, object]:
         slot_data: Dict[str, object] = {}
 
         ap_specific_settings: Set[str] = {"RisingTidesOverrides", "TrapChance"}
 
-        for option_name in timespinner_options:
-            if (option_name not in ap_specific_settings):
+        for option_name in fnafworld_options:
+            if option_name not in ap_specific_settings:
                 slot_data[option_name] = self.get_option_value(option_name)
 
         slot_data["StinkyMaw"] = True
@@ -86,8 +85,8 @@ class FnafWorldWorld(World):
         slot_data["PresentGate"] = self.precalculated_weights.present_key_unlock
         slot_data["PastGate"] = self.precalculated_weights.past_key_unlock
         slot_data["TimeGate"] = self.precalculated_weights.time_key_unlock
-        slot_data["Basement"] = int(self.precalculated_weights.flood_basement) + \
-                                int(self.precalculated_weights.flood_basement_high)
+        slot_data["Basement"] = int(self.precalculated_weights.flood_basement) \
+                                + int(self.precalculated_weights.flood_basement_high)
         slot_data["Xarion"] = self.precalculated_weights.flood_xarion
         slot_data["Maw"] = self.precalculated_weights.flood_maw
         slot_data["PyramidShaft"] = self.precalculated_weights.flood_pyramid_shaft
@@ -99,6 +98,7 @@ class FnafWorldWorld(World):
 
         return slot_data
 
+    # SW: This looks like something to put a hint on a sign, probably completely unnecessary for this game
     def write_spoiler_header(self, spoiler_handle: TextIO) -> None:
         if self.is_option_enabled("UnchainedKeys"):
             spoiler_handle.write(f'Modern Warp Beacon unlock:       {self.precalculated_weights.present_key_unlock}\n')
@@ -108,7 +108,7 @@ class FnafWorldWorld(World):
                 spoiler_handle.write(f'Mysterious Warp Beacon unlock:   {self.precalculated_weights.time_key_unlock}\n')
         else:
             spoiler_handle.write(f'Twin Pyramid Keys unlock:        {self.precalculated_weights.pyramid_keys_unlock}\n')
-       
+
         if self.is_option_enabled("RisingTides"):
             flooded_areas: List[str] = []
 
@@ -152,7 +152,7 @@ class FnafWorldWorld(World):
             classification = ItemClassification.trap
         else:
             classification = ItemClassification.filler
-            
+
         item = Item(name, classification, data.code, self.player)
 
         if not item.advancement:
@@ -177,7 +177,7 @@ class FnafWorldWorld(World):
         if self.multiworld.random.random() < (trap_chance / 100) and enabled_traps:
             return self.multiworld.random.choice(enabled_traps)
         else:
-            return self.multiworld.random.choice(filler_items) 
+            return self.multiworld.random.choice(filler_items)
 
     def get_excluded_items(self) -> Set[str]:
         excluded_items: Set[str] = set()
@@ -205,6 +205,7 @@ class FnafWorldWorld(World):
 
         return excluded_items
 
+    # SW: probably not needed
     def assign_starter_items(self, excluded_items: Set[str]) -> None:
         non_local_items: Set[str] = self.multiworld.non_local_items[self.player].value
 
@@ -225,23 +226,25 @@ class FnafWorldWorld(World):
         self.assign_starter_item(excluded_items, 'Tutorial: Yo Momma 1', local_starter_melee_weapons)
         self.assign_starter_item(excluded_items, 'Tutorial: Yo Momma 2', local_starter_spells)
 
+    # SW: probably not needed
     def assign_starter_item(self, excluded_items: Set[str], location: str, item_list: Tuple[str, ...]) -> None:
         item_name = self.multiworld.random.choice(item_list)
 
         self.place_locked_item(excluded_items, location, item_name)
 
+    # SW: probably not needed
     def place_first_progression_item(self, excluded_items: Set[str]) -> None:
         if self.is_option_enabled("QuickSeed") or self.is_option_enabled("Inverted") \
                 or self.precalculated_weights.flood_lake_desolation:
             return
 
         for item in self.multiworld.precollected_items[self.player]:
-            if item.name in starter_progression_items and not item.name in excluded_items:
+            if item.name in starter_progression_items and item.name not in excluded_items:
                 return
 
         local_starter_progression_items = tuple(
-            item for item in starter_progression_items 
-                if item not in excluded_items and item not in self.multiworld.non_local_items[self.player].value)
+            item for item in starter_progression_items
+            if item not in excluded_items and item not in self.multiworld.non_local_items[self.player].value)
 
         if not local_starter_progression_items:
             return
@@ -286,7 +289,7 @@ class FnafWorldWorld(World):
                 personal_items[location.address] = location.item.code
 
         return personal_items
-    
+
     def is_option_enabled(self, option: str) -> bool:
         return is_option_enabled(self.multiworld, self.player, option)
 
